@@ -1,0 +1,189 @@
+{
+  "readme_metadata": {
+    "title": "Supplemental Architecture Guide & Workspace Bootstrap Readme",
+    "target_platform": "Autonomous Hierarchical Multi-Agent Platform (H-MAP)",
+    "specification_compliance": "Model Context Protocol (MCP), AGENTS.md v1.0, gVisor OCI Runtime",
+    "last_updated": "2026-10-26"
+  },
+  "sources_and_resource_registry": [
+    {
+      "resource_name": "Model Context Protocol (MCP) SDK & Specification",
+      "category": "Tooling Interoperability Protocol",
+      "official_repository": "https://github.com/modelcontextprotocol",
+      "documentation": "https://modelcontextprotocol.io",
+      "license": "MIT",
+      "architectural_role": "Standardizes tool exposure, agent prompts, and resource reading across heterogeneous local and containerized services."
+    },
+    {
+      "resource_name": "AGENTS.md & Open Agent Standard",
+      "category": "Instruction Standardization",
+      "official_repository": "https://github.com/agents-md/agents.md",
+      "documentation": "https://agents.md",
+      "license": "Apache-2.0",
+      "architectural_role": "Specifies cross-tool repository rules, environment boundaries, and progressive disclosure root entrypoints."
+    },
+    {
+      "resource_name": "Agent Skills Specification (SKILL.md)",
+      "category": "Modular Capability Packaging",
+      "official_repository": "https://github.com/anthropics/skills",
+      "documentation": "https://docs.anthropic.com",
+      "license": "Apache-2.0",
+      "architectural_role": "Defines self-contained procedural skill folders containing YAML frontmatter triggers, procedural rules, and CLI entrypoints."
+    },
+    {
+      "resource_name": "Crawl4AI",
+      "category": "Asynchronous Web Scraping",
+      "official_repository": "https://github.com/unclecode/crawl4ai",
+      "documentation": "https://crawl4ai.com",
+      "license": "Apache-2.0",
+      "architectural_role": "Extracts clean, token-dense Markdown from web pages; prunes scripts, headers, styles, and base64 clutter."
+    },
+    {
+      "resource_name": "Tree-sitter",
+      "category": "AST & Concrete Syntax Parsing",
+      "official_repository": "https://github.com/tree-sitter/tree-sitter",
+      "documentation": "https://tree-sitter.github.io",
+      "license": "MIT",
+      "architectural_role": "Parses multi-language codebases into concrete syntax trees in microseconds, enabling targeted AST symbol reads without full-file context dumps."
+    },
+    {
+      "resource_name": "Ruff & Pyright",
+      "category": "Static Analysis & Linter Verification",
+      "official_repository": "https://github.com/astral-sh/ruff",
+      "documentation": "https://docs.astral.sh/ruff",
+      "license": "MIT",
+      "architectural_role": "Provides sub-second AST linting, formatting, and strict type verification inside the Critic Brain's inspection gate."
+    },
+    {
+      "resource_name": "LanceDB",
+      "category": "Embedded Vector & Columnar Database",
+      "official_repository": "https://github.com/lancedb/lancedb",
+      "documentation": "https://lancedb.github.io/lancedb",
+      "license": "Apache-2.0",
+      "architectural_role": "Provides in-process, serverless vector search directly against disk using Apache Arrow, avoiding client-server network serialization overhead."
+    },
+    {
+      "resource_name": "Mem0",
+      "category": "Personalized & Episodic Memory Layer",
+      "official_repository": "https://github.com/mem0ai/mem0",
+      "documentation": "https://docs.mem0.ai",
+      "license": "Apache-2.0",
+      "architectural_role": "Manages extraction and retention of long-term episodic facts, user preferences, and cross-session lessons."
+    },
+    {
+      "resource_name": "Google gVisor (runsc)",
+      "category": "Kernel-Level Sandbox Virtualization",
+      "official_repository": "https://github.com/google/gvisor",
+      "documentation": "https://gvisor.dev",
+      "license": "Apache-2.0",
+      "architectural_role": "Implements an isolated user-space application kernel intercepting and virtualizing Linux syscalls to stop container breakout exploits."
+    },
+    {
+      "resource_name": "E2B Infrastructure",
+      "category": "MicroVM Code Execution",
+      "official_repository": "https://github.com/e2b-dev/infra",
+      "documentation": "https://e2b.dev",
+      "license": "Apache-2.0",
+      "architectural_role": "Firecracker-based MicroVM runtime for isolated bash command, script, and test-suite execution."
+    },
+    {
+      "resource_name": "Smolagents & LangGraph",
+      "category": "Agent State Machine Orchestration",
+      "official_repository": "https://github.com/huggingface/smolagents",
+      "documentation": "https://langchain-ai.github.io/langgraph",
+      "license": "Apache-2.0 / MIT",
+      "architectural_role": "Manages cyclic Directed Acyclic Graphs, Code-as-Action tool dispatching, and deterministic pause/resume state transitions."
+    },
+    {
+      "resource_name": "SearXNG",
+      "category": "Private Self-Hosted Search Backend",
+      "official_repository": "https://github.com/searxng/searxng",
+      "documentation": "https://docs.searxng.org",
+      "license": "AGPL-3.0",
+      "architectural_role": "Aggregates metasearch queries into JSON outputs without API keys or tracking."
+    }
+  ],
+  "step_by_step_bootstrap_guide": [
+    {
+      "step_number": 1,
+      "phase_name": "Host System Dependencies & Sandboxing",
+      "instructions": "Install the necessary compiled CLI binaries, package managers, and container runtimes on the host machine.",
+      "terminal_commands": [
+        "curl -LsSf https://astral.sh/uv/install.sh | sh",
+        "sudo apt-get update && sudo apt-get install -y runsc docker.io git",
+        "sudo runsc install",
+        "sudo systemctl restart docker",
+        "uv tool install tree-sitter-cli ruff"
+      ],
+      "validation_criteria": "Run `docker run --runtime=runsc --rm hello-world` to confirm gVisor container virtualization is functional."
+    },
+    {
+      "step_number": 2,
+      "phase_name": "Workspace Scaffolding & Directory Isolation",
+      "instructions": "Scaffold the physical directory structure, partitioned operational workspaces, and rule symlinks.",
+      "terminal_commands": [
+        "mkdir -p .agent/rules .agent/wiki/tasks .agent/skills/{builtin,staging,promoted} .agent/memory/lancedb_store",
+        "mkdir -p .agent/workspaces/{thinking,research,code_staging,review_gates}",
+        "mkdir -p src/{core,orchestration,workers,evolution,sandbox} tests/harness",
+        "touch .agent/rules/AGENTS.md",
+        "ln -s AGENTS.md .agent/rules/CLAUDE.md",
+        "ln -s AGENTS.md .agent/rules/.clinerules"
+      ],
+      "validation_criteria": "Verify directory existence with `tree -a -L 3 .agent` and confirm symlinks resolve correctly to `AGENTS.md`."
+    },
+    {
+      "step_number": 3,
+      "phase_name": "Progressive Disclosure Wiki Deployment",
+      "instructions": "Populate Tier 1 `AGENTS.md` (< 150 lines) with the root navigation index and write the five Tier 2 domain protocol files into `.agent/wiki/`.",
+      "terminal_commands": [
+        "touch .agent/wiki/01_architecture.md",
+        "touch .agent/wiki/02_planning_protocol.md",
+        "touch .agent/wiki/03_engineering_standards.md",
+        "touch .agent/wiki/04_verification_protocol.md",
+        "touch .agent/wiki/05_persistence_and_memory.md",
+        "touch .agent/wiki/tasks/{database_migrations.md,dependency_management.md,subsystem_refactor.md,security_and_sandbox.md,incident_postmortem.md}"
+      ],
+      "validation_criteria": "Ensure every file stays under the 200-line limit: `wc -l .agent/wiki/*.md .agent/wiki/tasks/*.md`."
+    },
+    {
+      "step_number": 4,
+      "phase_name": "Python Environment & Core OOP Framework Setup",
+      "instructions": "Initialize the Python environment using `uv` and install core dependencies.",
+      "terminal_commands": [
+        "uv init --app",
+        "uv add pydantic langgraph crawl4ai tree-sitter lancedb pyarrow ruff pytest",
+        "uv run python -c \"import lancedb, crawl4ai, langgraph; print('Core stack successfully imported')\""
+      ],
+      "validation_criteria": "Execution succeeds with zero import or shared library resolution errors."
+    },
+    {
+      "step_number": 5,
+      "phase_name": "Auxiliary Services & MCP Configuration",
+      "instructions": "Launch background auxiliary services (SearXNG search backend) and configure local MCP client access.",
+      "terminal_commands": [
+        "docker compose -f docker-compose.infra.yml up -d",
+        "curl -s http://localhost:8080/search?q=test&format=json | grep -q 'results' && echo 'SearXNG Active'"
+      ],
+      "validation_criteria": "SearXNG returns valid JSON search queries on localhost port 8080."
+    },
+    {
+      "step_number": 6,
+      "phase_name": "Self-Evolution Loop Smoke Test",
+      "instructions": "Execute a synthetic task where a worker creates a multi-step routine, passes verification, and triggers `SkillSynthesizer` promotion.",
+      "terminal_commands": [
+        "uv run pytest tests/harness/test_evolution_loop.py -v"
+      ],
+      "validation_criteria": "Verify a new `.py` file appears inside `.agent/skills/promoted/` and an entry is logged in `.agent/memory/episodic_failures.parquet`."
+    }
+  ],
+  "configuration_templates": {
+    "docker_compose_infra_yml": "version: '3.8'\nservices:\n  searxng:\n    image: searxng/searxng:latest\n    container_name: agent_searxng\n    ports:\n      - \"8080:8080\"\n    environment:\n      - SEARXNG_BASE_URL=http://localhost:8080/\n    volumes:\n      - ./infra/searxng:/etc/searxng:ro\n    restart: unless-stopped\n    security_opt:\n      - no-new-privileges:true\n    cap_drop:\n      - ALL",
+    "pyproject_toml_snippet": "[project]\nname = \"agentic-workspace-core\"\nversion = \"1.0.0\"\ndescription = \"Production-hardened hierarchical multi-agent workspace\"\nrequires-python = \">=3.12\"\ndependencies = [\n    \"crawl4ai>=0.4.0\",\n    \"lancedb>=0.17.0\",\n    \"langgraph>=0.2.0\",\n    \"pydantic>=2.10.0\",\n    \"pyarrow>=18.0.0\",\n    \"tree-sitter>=0.23.0\",\n    \"ruff>=0.8.0\",\n    \"pytest>=8.3.0\"\n]\n\n[tool.ruff]\nline-length = 100\ntarget-version = \"py312\"\nselect = [\"E\", \"F\", \"I\", \"N\", \"UP\", \"ASYNC\", \"B\", \"A\", \"C4\", \"SIM\", \"ARG\"]\nignore = []",
+    "mcp_settings_json": "{\n  \"mcpServers\": {\n    \"filesystem\": {\n      \"command\": \"npx\",\n      \"args\": [\"-y\", \"@modelcontextprotocol/server-filesystem\", \".agent/workspaces\"]\n    },\n    \"searxng_research\": {\n      \"command\": \"uv\",\n      \"args\": [\"run\", \"src/sandbox/mcp_searxng_server.py\"]\n    },\n    \"treesitter_analyzer\": {\n      \"command\": \"uv\",\n      \"args\": [\"run\", \"src/sandbox/mcp_treesitter_server.py\"]\n    }\n  }\n}"
+  },
+  "operational_maintenance_protocols": {
+    "token_budget_audit": "Weekly audit verifying that Tier 1 rules remain < 150 lines and Tier 2/3 documents remain < 200 lines. Automated GitHub Action enforces rule file token budgets on pull request.",
+    "sandbox_integrity_check": "Nightly regression test attempting container breakouts (e.g., executing forbidden syscalls, inspecting `/proc/kcore`) to verify gVisor `runsc` continues blocking unauthorized calls.",
+    "memory_consolidation_sweep": "Bi-weekly cron job running `EpisodicMemoryGatekeeper.consolidate()` to prune stale scratchpad artifacts, eliminate duplicate LanceDB vector rows, and update the failure taxonomy."
+  }
+}

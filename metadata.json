@@ -1,0 +1,6 @@
+{
+  "name": "AgentForge - Autonomous Agentic Platform Setup & Provisioner",
+  "description": "Interactive framework installer, modular customizer, and verification engine for the Autonomous Hierarchical Multi-Agent Platform (H-MAP). Features strict OOP factories, dynamic resource registry, subagent workspace provisioning, and Gemini-powered research.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

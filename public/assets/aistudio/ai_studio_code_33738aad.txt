@@ -1,0 +1,201 @@
+{
+  "system_overview": "An enterprise-grade, modular, open-source agentic framework architected with strictly decoupled Object-Oriented Programming (OOP) design patterns, Model Context Protocol (MCP) tool bindings, dual-tier wiki-linked rule trees, and stateful memory engines.",
+  "gap_analysis": [
+    {
+      "missing_dimension": "Protocol Standardization & Tool Interoperability",
+      "impact": "Custom skill implementations create brittle code and high maintenance overhead when interfacing with diverse models or tools.",
+      "recommended_open_source_solution": "Adopt Model Context Protocol (MCP) by Anthropic to standardize tool, resource, and prompt sharing across agents."
+    },
+    {
+      "missing_dimension": "Secure Execution Sandboxing",
+      "impact": "Executing generated code, terminal commands, or database migrations on the host OS poses critical security vulnerabilities.",
+      "recommended_open_source_solution": "Integrate OpenHands runtime or self-hosted Docker / MicroVM sandboxes (e.g., Firecracker / E2B Core open-source engine) with permission boundaries."
+    },
+    {
+      "missing_dimension": "Deterministic Verification & Feedback Loops",
+      "impact": "LLMs hallucinate code completions and claim success without verifying test suites, linting rules, or runtime errors.",
+      "recommended_open_source_solution": "Implement an automated Critic/Verifier Loop (AST parsing via tree-sitter, Pytest/Vitest execution, and Ruff/ESLint enforcement)."
+    },
+    {
+      "missing_dimension": "Observability, Tracing, and Telemetry",
+      "impact": "Lack of visibility into agent thought chains, token latency, tool execution failures, and context window bloat.",
+      "recommended_open_source_solution": "Deploy Langfuse or Arize Phoenix (self-hosted) via OpenTelemetry hooks for token tracking, trace visualization, and evaluation datasets."
+    },
+    {
+      "missing_dimension": "Context Window Compaction & KV Cache Optimization",
+      "impact": "Long-running multi-turn sessions quickly degrade reasoning quality and exhaust LLM context limits.",
+      "recommended_open_source_solution": "Deploy a hierarchical context manager leveraging episodic compression, sliding semantic buffers, and hierarchical token budgets."
+    }
+  ],
+  "recommended_open_source_stack": {
+    "agent_core_orchestration": "LangGraph (StateGraph DAGs) or Smolagents / OpenHands Core for deterministic state transitions",
+    "memory_and_vector_store": "Mem0 (open-source personalized memory engine) + Qdrant / LanceDB for persistent embeddings and episodic storage",
+    "scraping_and_research": "Crawl4AI (high-performance async LLM-friendly crawler) + SearXNG (metasearch engine) + Playwright",
+    "sandboxing_and_execution": "Docker Engine / Containerd with gVisor runsc isolation",
+    "interoperability_and_tools": "Anthropic Model Context Protocol (MCP) Python/TypeScript SDKs",
+    "observability_and_eval": "Langfuse (self-hosted Docker) and DeepEval / Ragas for automated agent evaluation"
+  },
+  "filesystem_architecture_oop": {
+    "directory_tree": "agentic-system/\n├── .agent/\n│   ├── rules/\n│   │   ├── CLAUDE.md\n│   │   └── .clinerules\n│   └── wiki/\n│       ├── 01_architecture.md\n│       ├── 02_planning_protocol.md\n│       ├── 03_coding_standards.md\n│       ├── 04_memory_lifecycle.md\n│       └── 05_tool_contracts.md\n├── src/\n│   ├── core/\n│   │   ├── __init__.py\n│   │   ├── base_agent.py\n│   │   ├── context_engine.py\n│   │   ├── state_machine.py\n│   │   └── exceptions.py\n│   ├── memory/\n│   │   ├── __init__.py\n│   │   ├── memory_interface.py\n│   │   ├── episodic_memory.py\n│   │   ├── semantic_memory.py\n│   │   └── working_memory.py\n│   ├── skills/\n│   │   ├── __init__.py\n│   │   ├── base_skill.py\n│   │   ├── skill_registry.py\n│   │   ├── planning/\n│   │   │   ├── goal_decomposer.py\n│   │   │   └── tree_of_thought.py\n│   │   ├── research/\n│   │   │   ├── crawler_engine.py\n│   │   │   └── synthesizer.py\n│   │   ├── coding/\n│   │   │   ├── static_analyzer.py\n│   │   │   ├── patch_executor.py\n│   │   │   └── test_runner.py\n│   │   └── databasing/\n│   │       ├── schema_inspector.py\n│   │       └── migration_validator.py\n│   ├── execution/\n│   │   ├── __init__.py\n│   │   ├── sandbox_interface.py\n│   │   ├── docker_sandbox.py\n│   │   └── local_guard.py\n│   └── telemetry/\n│       ├── __init__.py\n│       └── tracer.py\n├── tests/\n├── docker-compose.yml\n└── pyproject.toml",
+    "oop_class_model": [
+      {
+        "class_name": "BaseAgent (src/core/base_agent.py)",
+        "responsibility": "Abstract base orchestrator controlling the agent life cycle, prompt injection, and dispatch loop.",
+        "interfaces_and_methods": [
+          "abstract step(input_payload: AgentPayload) -> AgentResponse",
+          "register_skill(skill: ISkill) -> None",
+          "set_memory_engine(engine: IMemoryEngine) -> None",
+          "transition_state(target_state: ExecutionState) -> None"
+        ]
+      },
+      {
+        "class_name": "ContextEngine (src/core/context_engine.py)",
+        "responsibility": "Aggregates, token-budgets, and injects wiki rules, working memory, and tool outputs into model input prompts.",
+        "interfaces_and_methods": [
+          "compile_system_prompt() -> str",
+          "resolve_wiki_links(content: str) -> List[WikiReference]",
+          "prune_context(budget_tokens: int) -> TokenPrunedContext"
+        ]
+      },
+      {
+        "class_name": "IMemoryEngine (src/memory/memory_interface.py)",
+        "responsibility": "Defines contracts for working memory, vector episodic storage, and long-term key-value entities.",
+        "interfaces_and_methods": [
+          "abstract recall(query: str, top_k: int) -> List[MemoryRecord]",
+          "abstract store(record: MemoryRecord) -> str",
+          "abstract consolidate() -> None"
+        ]
+      },
+      {
+        "class_name": "ISkill (src/skills/base_skill.py)",
+        "responsibility": "Interface for modular capabilities adhering to the Model Context Protocol (MCP) schema.",
+        "interfaces_and_methods": [
+          "abstract get_schema() -> Dict[str, Any]",
+          "abstract execute(params: Dict[str, Any], context: ExecutionContext) -> SkillResult",
+          "abstract validate_permissions(context: ExecutionContext) -> bool"
+        ]
+      },
+      {
+        "class_name": "ISandbox (src/execution/sandbox_interface.py)",
+        "responsibility": "Isolates side-effecting operations like arbitrary code execution, file writes, and shell invocations.",
+        "interfaces_and_methods": [
+          "abstract run_command(cmd: str, timeout: int) -> ExecutionOutput",
+          "abstract write_virtual_file(path: str, data: bytes) -> bool",
+          "abstract cleanup() -> None"
+        ]
+      }
+    ]
+  },
+  "agent_rules_architecture": {
+    "root_rule_file_name": ".agent/rules/.clinerules / CLAUDE.md",
+    "line_count": 86,
+    "strategy": "High-density instruction index adhering to a strict 200-line limit. It utilizes wiki-style references (`[[topic]]`) mapped directly to supplemental markdown documents inside `.agent/wiki/`.",
+    "root_rule_content": "# AGENT OPERATING DIRECTIVE\n\n## 1. IDENTITY & CONTRACT\nYou are an autonomous Principal Software Engineer operating within an enterprise OOP workspace.\nYou must strictly adhere to the protocols documented in the system wiki:\n- Architecture & Component Boundaries: [[01_architecture]]\n- Planning & Decision Trees: [[02_planning_protocol]]\n- Coding & Review Protocols: [[03_coding_standards]]\n- Memory Persistence & Context Budgeting: [[04_memory_lifecycle]]\n- Tool Contracts & Verification: [[05_tool_contracts]]\n\n## 2. OPERATIONAL INVARIANTS\n1. Deterministic Over Heuristic: Never guess missing context. Inspect files and consult [[01_architecture]].\n2. Strict Object-Oriented Design: All additions must follow SOLID, typed interfaces, and clean separation of concerns.\n3. Verify Before Committing: No code task is complete until automated tests pass inside the execution sandbox.\n4. Principle of Least Privilege: Destructive disk/database commands require explicit confirmation.\n\n## 3. EXECUTION CYCLE\nExecute every task through the following deterministic loop:\n```\n[OBSERVE] -> [PLAN ([[02_planning_protocol]])] -> [EXECUTE ([[05_tool_contracts]])] -> [VERIFY ([[03_coding_standards]])] -> [MEMORIZE ([[04_memory_lifecycle]])]\n```\n\n### Phase Details:\n- OBSERVE: Parse project state, inspect ASTs, and recall historical decisions.\n- PLAN: Break complex tasks into finite atomic operations. Update the scratchpad.\n- EXECUTE: Invoke MCP tools or typed Python skill objects. Confine file mutations.\n- VERIFY: Run unit tests, type checkers (mypy/pyright), and linter suites.\n- MEMORIZE: Persist reusable patterns, schema revisions, and gotchas to long-term memory.\n\n## 4. ERROR BUDGETS & RECOVERY\n- Single failure: Analyze stdout/stderr, trace AST, update scratchpad, retry.\n- Consecutive failures (>= 3): Pause execution, document the blocker in memory, and present root-cause analysis to the user.\n- No blind retries without modifying code, environment, or parameters.\n\n## 5. SKILL ROUTING MATRIX\n- Planning: Use `GoalDecomposer` and `TreeOfThought` before modifying > 2 files.\n- Research: Use `Crawl4AIEngine` for documentation; avoid raw unparsed HTML.\n- Code Modification: Use `PatchExecutor` + `StaticAnalyzer` + `TestRunner`.\n- Database Operations: Use `SchemaInspector` + dry-run migrations.\n\n## 6. INTERACTION PROTOCOL\n- Deliver actionable, production-ready code with full type annotations.\n- Do not output placeholders (`// TODO`, `pass`, `...`).\n- Conclude every intervention with: 1) Files touched, 2) Verification status, 3) Updated wiki references."
+  },
+  "supplemental_wiki_manifest": [
+    {
+      "wiki_path": ".agent/wiki/01_architecture.md",
+      "purpose": "Comprehensive structural blueprint, class dependency diagrams, and directory ownership boundaries."
+    },
+    {
+      "wiki_path": ".agent/wiki/02_planning_protocol.md",
+      "purpose": "Step-by-step guidance for Task Decomposition, Tree-of-Thought search, and atomic rollback workflows."
+    },
+    {
+      "wiki_path": ".agent/wiki/03_coding_standards.md",
+      "purpose": "Defines naming conventions, OOP patterns (Factory, Strategy, Repository), type-hinting standards, and lint requirements."
+    },
+    {
+      "wiki_path": ".agent/wiki/04_memory_lifecycle.md",
+      "purpose": "Guidelines for writing episodic traces, vector embeddings, entity graphs, and ContextEngine compression routines."
+    },
+    {
+      "wiki_path": ".agent/wiki/05_tool_contracts.md",
+      "purpose": "MCP schemas, parameter validations, sandbox security constraints, and network access policies."
+    }
+  ],
+  "skills_matrix": {
+    "logical_thinking_and_planning": [
+      {
+        "skill_name": "GoalDecomposer",
+        "description": "Translates high-level tasks into topologically sorted Directed Acyclic Graphs (DAGs) of executable actions.",
+        "implementation_pattern": "OOP class subclassing `BasePlanningSkill` with step-wise dependency validation."
+      },
+      {
+        "skill_name": "TreeOfThoughtEngine",
+        "description": "Evaluates multi-path solutions using heuristic scoring to select optimal implementation strategies before code mutation.",
+        "implementation_pattern": "Breadth-First Search (BFS) / Monte Carlo Tree Search (MCTS) evaluator."
+      }
+    ],
+    "research_and_web_scraping": [
+      {
+        "skill_name": "Crawl4AIExtractor",
+        "description": "Executes async browser-based rendering, extracts structured markdown, strips boilerplate, and isolates API docs.",
+        "implementation_pattern": "Async wrapper over Crawl4AI / Playwright with content deduplication."
+      },
+      {
+        "skill_name": "SearXNGSearchClient",
+        "description": "Privacy-focused, self-hosted meta-search query engine aggregating multi-engine research outputs.",
+        "implementation_pattern": "Stateless HTTP client with fallback proxy rotation and snippet ranking."
+      }
+    ],
+    "coding_and_code_review": [
+      {
+        "skill_name": "TreeSitterAnalyzer",
+        "description": "Parses multi-language Abstract Syntax Trees (ASTs) to map function signatures, callsites, and circular dependencies.",
+        "implementation_pattern": "Object-oriented AST visitor pattern encapsulating tree-sitter bindings."
+      },
+      {
+        "skill_name": "SandboxVerifier",
+        "description": "Executes unit and integration tests inside an isolated container, streaming test failures directly to the agent.",
+        "implementation_pattern": "Strategy pattern implementation supporting Docker, Podman, and MicroVM engines."
+      }
+    ],
+    "databasing_memory_context": [
+      {
+        "skill_name": "EpisodicVectorStore",
+        "description": "Stores user decisions, past errors, and successful patches into Qdrant/LanceDB with dense retrieval.",
+        "implementation_pattern": "Repository pattern adhering to `IMemoryEngine` with hybrid dense-sparse vector scoring."
+      },
+      {
+        "skill_name": "HierarchicalContextCompressor",
+        "description": "Monitors token consumption and applies recursive summarization to stale conversational context.",
+        "implementation_pattern": "Sliding-window buffer with selective entity-preserving compaction."
+      }
+    ]
+  },
+  "implementation_roadmap": [
+    {
+      "phase": "Phase 1: Foundation & OOP Core",
+      "tasks": [
+        "Initialize project directory layout and create abstract interfaces (BaseAgent, ISkill, IMemoryEngine, ISandbox).",
+        "Implement `.agent/rules/CLAUDE.md` and `.agent/rules/.clinerules` alongside all 5 supplemental wiki documents.",
+        "Set up Docker compose file initializing Qdrant (vector DB) and SearXNG (search backend)."
+      ]
+    },
+    {
+      "phase": "Phase 2: Execution Sandboxing & Tool Protocols",
+      "tasks": [
+        "Build `DockerSandbox` implementing `ISandbox` to isolate bash execution and filesystem mutations.",
+        "Implement MCP (Model Context Protocol) server to expose core skills under a unified protocol.",
+        "Integrate Crawl4AI for headless, clean web research."
+      ]
+    },
+    {
+      "phase": "Phase 3: Cognitive Engine & Memory Integration",
+      "tasks": [
+        "Implement `ContextEngine` with automated `[[wiki_link]]` resolution and token budget compaction.",
+        "Integrate Mem0 / Qdrant repository for semantic entity tracking and episodic cross-session retention.",
+        "Create `GoalDecomposer` to transform prompts into typed execution DAGs."
+      ]
+    },
+    {
+      "phase": "Phase 4: Verification, Linting, & Telemetry",
+      "tasks": [
+        "Build `TreeSitterAnalyzer` for static validation and `SandboxVerifier` for continuous test-driven loops.",
+        "Mount self-hosted Langfuse container and connect OpenTelemetry instrumentation across agent cycles.",
+        "Benchmark the complete agent against standard coding and multi-hop reasoning tasks."
+      ]
+    }
+  ]
+}

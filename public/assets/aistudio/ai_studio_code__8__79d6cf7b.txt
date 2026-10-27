@@ -1,0 +1,226 @@
+{
+  "project_metadata": {
+    "project_name": "Autonomous Agentic Core Workspace",
+    "version": "1.0.0",
+    "architecture_pattern": "Hierarchical Multi-Agent Platform (H-MAP) with Progressive Disclosure",
+    "security_profile": "Zero-Trust gVisor Containerized Isolation with Air-Gapped MCP Proxies",
+    "state_management": "Decoupled Shared Blackboard with Arrow-backed LanceDB Episodic Persistence"
+  },
+  "filesystem_manifest": {
+    "root_directory": "agentic_workspace/",
+    "directory_structure": {
+      ".agent/": {
+        "description": "System cognitive configuration, wiki-linked instruction rules, and self-evolution registries.",
+        "subdirectories": {
+          "rules/": {
+            "description": "Tier 1 Root entrypoints with symlinked compatibility anchors.",
+            "files": [
+              "AGENTS.md",
+              "CLAUDE.md",
+              ".clinerules"
+            ]
+          },
+          "wiki/": {
+            "description": "Tier 2 Domain protocol markdowns navigated via wiki-linking.",
+            "files": [
+              "01_architecture.md",
+              "02_planning_protocol.md",
+              "03_engineering_standards.md",
+              "04_verification_protocol.md",
+              "05_persistence_and_memory.md"
+            ],
+            "subdirectories": {
+              "tasks/": {
+                "description": "Tier 3 Highly specialized task Standard Operating Procedures (SOPs).",
+                "files": [
+                  "database_migrations.md",
+                  "dependency_management.md",
+                  "subsystem_refactor.md",
+                  "security_and_sandbox.md",
+                  "incident_postmortem.md"
+                ]
+              }
+            }
+          },
+          "skills/": {
+            "description": "Modular Python tool extensions implementing the ISkill and MCP interfaces.",
+            "subdirectories": {
+              "builtin/": "Pre-installed core system capabilities (AST parsers, web scrapers, test drivers).",
+              "staging/": "Auto-synthesized candidate skills awaiting sandbox test verification.",
+              "promoted/": "Verified self-evolved skills approved for runtime agent execution."
+            }
+          },
+          "memory/": {
+            "description": "Episodic traces, failure taxonomy databases, and vector stores.",
+            "files": [
+              "episodic_failures.parquet",
+              "lancedb_store/"
+            ]
+          }
+        }
+      },
+      ".agent/workspaces/": {
+        "description": "Physically partitioned working directories to prevent cross-phase context contamination and file pollution.",
+        "subdirectories": {
+          "thinking/": {
+            "description": "Volatile cognitive scratchpad, Task DAGs, Monte Carlo Tree Search logs, and Blackboard state.",
+            "files": [
+              "blackboard.json",
+              "scratchpad.md",
+              "active_dag.json"
+            ]
+          },
+          "research/": {
+            "description": "Isolated workspace for the Web Intelligence Worker; stores raw scrape caches and synthesized digests.",
+            "files": [
+              "search_cache/",
+              "synthesized_docs/",
+              "extracted_apis/"
+            ]
+          },
+          "code_staging/": {
+            "description": "Ephemeral sandbox worktree where the Code Worker drafts patches prior to testing.",
+            "files": [
+              "patches/",
+              "transient_source/",
+              "build_logs/"
+            ]
+          },
+          "review_gates/": {
+            "description": "Deterministic inspection zone for the Critic Brain; stores AST diffs, mutation outputs, and lint reports.",
+            "files": [
+              "static_analysis.json",
+              "fuzz_reports/",
+              "coverage_delta.json"
+            ]
+          }
+        }
+      },
+      "src/": {
+        "description": "Production source code organized by strict object-oriented patterns.",
+        "subdirectories": {
+          "core/": "Base classes for agents, blackboard, context compilation, and contracts.",
+          "orchestration/": "Brain agent controllers, DAG dispatchers, and state machine transitions.",
+          "workers/": "Specialized worker agent implementations (Code, Research, Database, QA).",
+          "evolution/": "Self-reflection engines, skill synthesizers, and wiki rule patchers.",
+          "sandbox/": "gVisor container runtimes, MCP interceptor proxies, and network egress firewalls."
+        }
+      },
+      "tests/": {
+        "description": "Deterministic verification suites, benchmark harnesses, and regression tests."
+      }
+    }
+  },
+  "tier_1_root_rule_file": {
+    "file_path": ".agent/rules/AGENTS.md",
+    "line_count": 88,
+    "content": "# AGENT OPERATING CHARTER (KERNEL RULES)\n\n## 1. IDENTITY & GOVERNANCE MODEL\nYou are an autonomous agent node operating inside the Hierarchical Multi-Agent Platform (H-MAP).\nExecution is governed by the Brain Triumvirate (Architect, Critic, Evolution). Do not guess conventions or mutate code speculatively.\n\n## 2. NAVIGATION INDEX & SYSTEM PROTOCOLS\nYou MUST consult and read domain-specific protocols via `read_file` before initiating actions:\n- System Architecture & Boundaries      -> [[.agent/wiki/01_architecture.md]]\n- Cognitive Planning & Task DAGs       -> [[.agent/wiki/02_planning_protocol.md]]\n- OOP Engineering & Typing Standards   -> [[.agent/wiki/03_engineering_standards.md]]\n- Deterministic Review & Testing Gates -> [[.agent/wiki/04_verification_protocol.md]]\n- Context Budgeting & Memory Engine    -> [[.agent/wiki/05_persistence_and_memory.md]]\n\n## 3. SPECIALIZED TASK DIRECTIVES (LAZY-LOADED)\nFor high-risk operations, strictly follow the relevant SOP before calling mutation tools:\n- Database DDL & Schema Changes       -> [[.agent/wiki/tasks/database_migrations.md]]\n- Dependency Installs & Upgrades       -> [[.agent/wiki/tasks/dependency_management.md]]\n- Large-scale Refactoring              -> [[.agent/wiki/tasks/subsystem_refactor.md]]\n- Sandboxing & Command Execution       -> [[.agent/wiki/tasks/security_and_sandbox.md]]\n- Error Recovery & Bug Triage          -> [[.agent/wiki/tasks/incident_postmortem.md]]\n\n## 4. WORKSPACE PARTITIONING & ISOLATION INVARIANTS\nAll multi-turn work must respect the physical directory boundaries:\n- Thinking & DAG state MUST reside in `.agent/workspaces/thinking/`\n- Raw research dumps & API digests MUST reside in `.agent/workspaces/research/`\n- Unverified code modifications MUST reside in `.agent/workspaces/code_staging/`\n- Review reports & test outputs MUST reside in `.agent/workspaces/review_gates/`\n\n## 5. HARD OPERATIONAL INVARIANTS\n1. Deterministic Verification: No task is complete without automated test evidence in the sandbox.\n2. AST-First File Inspection: Never dump full files > 100 lines into context. Use Tree-sitter symbol queries.\n3. Zero Placeholders: Omission of implementation (`TODO`, `pass`, `...`) is strictly prohibited.\n4. Fail-Fast Escalation: After 3 consecutive failed verification loops, halt and log to `.agent/workspaces/thinking/scratchpad.md`."
+  },
+  "tier_2_supplemental_wiki_manifest": [
+    {
+      "file_path": ".agent/wiki/01_architecture.md",
+      "summary": "Formal contracts for BaseAgent, BrainAgent, ExecutionWorker, and the Blackboard message schema. Outlines lifecycle hooks and state isolation."
+    },
+    {
+      "file_path": ".agent/wiki/02_planning_protocol.md",
+      "summary": "Mandatory checklist for task deconstruction into a DAG, Tree-of-Thought scoring rubric, token budget allocation, and human escalation criteria."
+    },
+    {
+      "file_path": ".agent/wiki/03_engineering_standards.md",
+      "summary": "Enforces SOLID patterns, Abstract Base Classes, dependency injection, strict static type signatures, and custom exception hierarchies."
+    },
+    {
+      "file_path": ".agent/wiki/04_verification_protocol.md",
+      "summary": "Step-by-step instructions for running Pytest, Ruff, and AST linters inside isolated gVisor containers. Sets criteria for Critic Brain sign-off."
+    },
+    {
+      "file_path": ".agent/wiki/05_persistence_and_memory.md",
+      "summary": "Context management policies: KV-cache alignment, scratchpad eviction rules, LanceDB episodic memory querying, and failure taxonomy logging."
+    }
+  ],
+  "tier_3_specialized_task_directives": [
+    {
+      "file_path": ".agent/wiki/tasks/database_migrations.md",
+      "summary": "Prohibits direct production alterations. Enforces dry-run execution against local containers, generation of down/revert migrations, and schema validation."
+    },
+    {
+      "file_path": ".agent/wiki/tasks/dependency_management.md",
+      "summary": "Requires vulnerability auditing via pip-audit/npm audit, lockfile synchronization, and regression testing prior to package installation."
+    },
+    {
+      "file_path": ".agent/wiki/tasks/subsystem_refactor.md",
+      "summary": "Defines the protocol for AST call-site tracking, deprecated interface wrapping, and atomic cross-module test passes."
+    },
+    {
+      "file_path": ".agent/wiki/tasks/security_and_sandbox.md",
+      "summary": "Security boundaries: drop all Linux capabilities (`CAP_DROP ALL`), enable read-only root filesystems, disable outbound network egress by default."
+    },
+    {
+      "file_path": ".agent/wiki/tasks/incident_postmortem.md",
+      "summary": "Mandates authoring a reproduction test case prior to editing code. Outlines the post-mortem report schema for the Evolution Brain."
+    }
+  ],
+  "workspace_isolation_and_partitioning_rules": {
+    "thinking_partition": {
+      "target_directory": ".agent/workspaces/thinking/",
+      "allowed_agents": ["Strategic Architect Brain", "Critic Brain"],
+      "retention_policy": "Volatile per task session. Cleared upon task completion, with essential lessons consolidated into episodic memory."
+    },
+    "research_partition": {
+      "target_directory": ".agent/workspaces/research/",
+      "allowed_agents": ["Web Intelligence Worker"],
+      "retention_policy": "Compressed markdown summaries retained; raw HTML and cache files auto-pruned after 48 hours."
+    },
+    "code_staging_partition": {
+      "target_directory": ".agent/workspaces/code_staging/",
+      "allowed_agents": ["Code Engineering Worker"],
+      "retention_policy": "Ephemeral. Code is only moved to `src/` once verified by the Critic Brain and test runner."
+    },
+    "review_gates_partition": {
+      "target_directory": ".agent/workspaces/review_gates/",
+      "allowed_agents": ["Critic & Verification Brain", "Adversarial QA Agent"],
+      "retention_policy": "Persistent audit trail for the session. Ingested by the Evolution Brain during post-mortem."
+    }
+  },
+  "self_evolution_subsystem_implementation": {
+    "skill_synthesizer": {
+      "source_path": "src/evolution/skill_synthesizer.py",
+      "workflow": "Extracts repeated multi-step code actions from `.agent/workspaces/review_gates/`, abstracts them into a typed `ISkill` class, generates unit tests in `.agent/skills/staging/`, verifies them in the sandbox, and promotes them to `.agent/skills/promoted/`."
+    },
+    "failure_taxonomy_engine": {
+      "source_path": "src/evolution/failure_taxonomy.py",
+      "workflow": "Logs errors to `.agent/memory/episodic_failures.parquet`. Automatically injects top matching failure mitigations into the Strategic Architect's task prompt."
+    },
+    "wiki_rule_refiner": {
+      "source_path": "src/evolution/wiki_refiner.py",
+      "workflow": "Monitors recurring anti-patterns and generates pull requests or patches to Tier 2/3 markdown files while enforcing the 200-line limit per file."
+    }
+  },
+  "deployment_and_bootstrap_sequence": [
+    {
+      "step": 1,
+      "name": "Filesystem Scaffolding",
+      "action": "Initialize root folder, `.agent/` hierarchies, `.agent/workspaces/` isolation partitions, and symlinks (`CLAUDE.md` and `.clinerules` -> `AGENTS.md`)."
+    },
+    {
+      "step": 2,
+      "name": "Core OOP & Runtime Setup",
+      "action": "Implement abstract base classes (`BaseAgent`, `ISkill`, `ISandbox`) in `src/core/` and configure gVisor container configuration in `src/sandbox/`."
+    },
+    {
+      "step": 3,
+      "name": "Wiki Documentation Initialization",
+      "action": "Write Tier 1 `AGENTS.md` and all 10 supplemental Tier 2 and Tier 3 markdown rule files."
+    },
+    {
+      "step": 4,
+      "name": "Agent & Tool Integration",
+      "action": "Wire the Brain Triumvirate, deploy specialized workers, connect Crawl4AI and Tree-sitter tools via the Model Context Protocol (MCP)."
+    },
+    {
+      "step": 5,
+      "name": "Self-Evolution Loop Activation",
+      "action": "Initialize LanceDB and Parquet failure logs, activate the `SkillSynthesizer` staging pipeline, and run regression verification benchmarks."
+    }
+  ]
+}

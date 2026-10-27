@@ -1,0 +1,95 @@
+{
+  "system_requirements_overview": "External programs needed to support this agentic architecture fall into three operational tiers: 1) Knowledge graph authoring and wiki visualization, 2) Sandboxed container and micro-runtime engines, and 3) Developer interfaces and local service daemons. No proprietary software is mandatory; the system operates on local, open-source or free-tier utilities.",
+  "external_programs": [
+    {
+      "category": "Knowledge Base & Rule Graph Authoring",
+      "program_name": "Obsidian",
+      "type": "Desktop Application (Electron / Local Markdown)",
+      "is_mandatory": false,
+      "recommended_tier": "Highly Recommended",
+      "purpose": "Authoring, navigating, and visually inspecting the `.agent/wiki/` directory. Provides native bidirectional `[[wikilink]]` resolution, visual interactive graph view of rule interdependencies, dead link detection, and frontmatter linting.",
+      "alternative_options": [
+        "Foam (VS Code Extension)",
+        "Logseq (Open-source local-first outliner)",
+        "Dendron (VS Code hierarchical PKM)"
+      ]
+    },
+    {
+      "category": "Sandboxing & Containerization Runtime",
+      "program_name": "Docker Engine / Podman with gVisor (runsc)",
+      "type": "System Daemon / Container Runtime",
+      "is_mandatory": true,
+      "recommended_tier": "Essential / Mandatory",
+      "purpose": "Isolating agent terminal commands, code execution, database migrations, and testing loops away from the host OS. `runsc` (gVisor) provides an unprivileged user-space kernel preventing breakout attacks.",
+      "alternative_options": [
+        "OrbStack (Lightweight macOS Docker replacement)",
+        "Firecracker (AWS open-source MicroVM runtime for bare-metal Linux)",
+        "Podman (Rootless daemonless container engine)"
+      ]
+    },
+    {
+      "category": "Agent IDE & Terminal Interfaces",
+      "program_name": "VS Code / Cursor with Cline or Roo Code",
+      "type": "IDE / Extension Runtime",
+      "is_mandatory": true,
+      "recommended_tier": "Essential / Mandatory",
+      "purpose": "Primary workspace interface hosting the agent loop. Cline/Roo Code handles automated tool execution, filesystem diffs, and MCP server configuration while referencing `.clinerules` and `.agent/wiki/`.",
+      "alternative_options": [
+        "Claude Code (Anthropic terminal agent CLI targeting CLAUDE.md)",
+        "Aider (Open-source CLI pair programming agent)",
+        "Windsurf / Zed"
+      ]
+    },
+    {
+      "category": "AST & Fast Tooling Binaries",
+      "program_name": "uv & Tree-sitter CLI",
+      "type": "Compiled CLI Utilities (Rust / C)",
+      "is_mandatory": true,
+      "recommended_tier": "Essential / Mandatory",
+      "purpose": "`uv` manages sub-second virtual environments and package resolution. `tree-sitter-cli` enables instant multi-language AST syntax extraction and symbol mapping without burning LLM context tokens.",
+      "alternative_options": [
+        "ast-grep (Rust-based AST structural search CLI)",
+        "Ruff CLI (Sub-millisecond Python linter and formatter)"
+      ]
+    },
+    {
+      "category": "Private Web Search Backend",
+      "program_name": "SearXNG",
+      "type": "Self-Hosted Docker Service",
+      "is_mandatory": false,
+      "recommended_tier": "Recommended for Privacy & Zero-Cost Research",
+      "purpose": "Provides a local metasearch endpoint serving clean JSON search results to the research skill, circumventing commercial search API costs (Tavily/SerpAPI) and tracking.",
+      "alternative_options": [
+        "Brave Search API",
+        "DuckDuckGo CLI Scraper"
+      ]
+    },
+    {
+      "category": "Agent Observability & Tracing Dashboard",
+      "program_name": "Langfuse (Local Docker Container)",
+      "type": "Web Application / Telemetry Service",
+      "is_mandatory": false,
+      "recommended_tier": "Recommended for Production",
+      "purpose": "Visualizes the agent's thought traces, token consumption across wiki files, latency per tool call, and provides an audit log for security debugging.",
+      "alternative_options": [
+        "Arize Phoenix (Self-hosted local telemetry UI)",
+        "OpenTelemetry Collector + Jaeger"
+      ]
+    }
+  ],
+  "obsidian_role_and_integration": {
+    "role_in_system": "Obsidian serves as the Human-in-the-Loop knowledge console. Pointing an Obsidian vault at the root of the `.agent/` directory allows the developer to inspect the agent's scratchpad, edit Tier 2/Tier 3 markdown rules in real time, and visually verify that wiki links (`[[02_planning_protocol]]`) are unbroken.",
+    "recommended_obsidian_plugins": [
+      "Dataview (Querying and indexing agent rule metadata)",
+      "Git (Automating commit histories for rule alterations)",
+      "Omnisearch (Instant full-text and semantic indexing of documentation)"
+    ]
+  },
+  "minimalist_workstation_setup_plan": {
+    "step_1": "Install runtime foundations: `git`, `docker`, and `uv` (Rust-based package manager).",
+    "step_2": "Install the editor/interface: VS Code or Cursor with the Cline extension, or install `claude` (Claude Code CLI).",
+    "step_3": "Install Obsidian and open the repository root or `.agent/` folder as a local vault to preview and maintain the rule graph.",
+    "step_4": "Spin up `docker-compose.yml` to run the SearXNG search engine and Langfuse dashboard in the background.",
+    "step_5": "Verify AST binaries (`tree-sitter-cli`, `ruff`) are available on the system PATH for microsecond linting and symbol extraction."
+  }
+}

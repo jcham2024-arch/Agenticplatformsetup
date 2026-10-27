@@ -1,0 +1,253 @@
+{
+  "three_tier_architecture": {
+    "tier_1_kernel_root": {
+      "purpose": "Ambient, always-loaded global router and invariant enforcer. Maintains core identity, operating loop, and navigation dispatch table.",
+      "token_target": "500 - 1,200 tokens (80 - 150 lines)",
+      "files": [
+        {
+          "path": "AGENTS.md",
+          "symlinks": [
+            "CLAUDE.md",
+            ".clinerules"
+          ],
+          "responsibility": "Kernel entrypoint containing unbreachable constraints, tool execution protocol, and a wiki routing map pointing to Tier 2 domains."
+        }
+      ]
+    },
+    "tier_2_domain_protocols": {
+      "purpose": "Domain-level execution rulebooks loaded on-demand when the agent enters a specific operational phase (e.g., coding, research, planning).",
+      "token_target": "1,000 - 2,500 tokens per file (100 - 200 lines)",
+      "files": [
+        {
+          "path": ".agent/wiki/01_planning_protocol.md",
+          "responsibility": "Complexity classification, step-by-step task breakdown, state validation, and human escalation thresholds."
+        },
+        {
+          "path": ".agent/wiki/02_research_protocol.md",
+          "responsibility": "Search query formulation, Crawl4AI scraping rules, AST dependency mapping, and content deduplication."
+        },
+        {
+          "path": ".agent/wiki/03_engineering_standards.md",
+          "responsibility": "Strict OOP patterns, SOLID boundaries, typed interfaces, forbidden escape hatches, and error hierarchies."
+        },
+        {
+          "path": ".agent/wiki/04_verification_protocol.md",
+          "responsibility": "Test execution loops, AST static analysis gates, linting benchmarks, and PR review scorecards."
+        },
+        {
+          "path": ".agent/wiki/05_persistence_and_memory.md",
+          "responsibility": "Context budget management, scratchpad maintenance, episodic memory logging, and vector embedding schema."
+        }
+      ]
+    },
+    "tier_3_task_directives_and_schemas": {
+      "purpose": "Granular, deterministic SOPs, schema validation files, and script targets loaded strictly during high-risk or domain-isolated execution.",
+      "token_target": "500 - 1,500 tokens per file (lazy loaded)",
+      "files": [
+        {
+          "path": ".agent/wiki/tasks/database_migrations.md",
+          "responsibility": "Lock-step transactional DDL safety, dry-run validations, rollback verification, and index optimization rules."
+        },
+        {
+          "path": ".agent/wiki/tasks/dependency_management.md",
+          "responsibility": "Lockfile integrity, zero-trust vulnerability scanning, license auditing, and minimal blast radius version bumps."
+        },
+        {
+          "path": ".agent/wiki/tasks/subsystem_refactor.md",
+          "responsibility": "Deprecation schedules, AST call-site updates, backwards compatibility testing, and interface segregation."
+        },
+        {
+          "path": ".agent/wiki/tasks/security_and_sandbox.md",
+          "responsibility": "Containerized isolation boundaries, secret scrubbing, bash parameter sanitization, and network whitelisting."
+        },
+        {
+          "path": ".agent/wiki/tasks/incident_postmortem.md",
+          "responsibility": "Regression triage protocol, reproduction test writing, root-cause isolation, and memory update checklists."
+        }
+      ]
+    }
+  },
+  "rule_categories": [
+    {
+      "category_name": "Cognitive Deconstruction & Planning",
+      "rationale": "Prevents immediate speculative code editing on complex problems; enforces systematic reasoning prior to mutation.",
+      "mandatory_directives": [
+        "Classify task by complexity: Tier A (single file/trivial) vs. Tier B (multi-file/architectural).",
+        "Construct Directed Acyclic Graph (DAG) of atomic changes before writing code.",
+        "Define explicit completion and rollback conditions."
+      ]
+    },
+    {
+      "category_name": "Information Foraging & Research",
+      "rationale": "Ensures the agent uses accurate system context and modern library docs rather than relying on stale model training data.",
+      "mandatory_directives": [
+        "Perform headless HTML extraction with structural filtering (Crawl4AI) to strip CSS/DOM noise.",
+        "Trace AST call graphs before editing unindexed library symbols.",
+        "Synthesize external documentation into targeted scratchpad notes before implementation."
+      ]
+    },
+    {
+      "category_name": "Object-Oriented Implementation",
+      "rationale": "Guarantees clean architectural boundaries, modular maintainability, and enterprise-grade code cleanliness.",
+      "mandatory_directives": [
+        "Program to interfaces/abstract base classes (ABCs), never concrete implementations.",
+        "Inject all dependencies through constructors; reject global state and singletons.",
+        "Enforce strict static type checking with zero tolerance for untyped escape hatches (e.g., Any, unknown)."
+      ]
+    },
+    {
+      "category_name": "Deterministic Verification & Review",
+      "rationale": "Closes the feedback loop by preventing the agent from claiming completion without deterministic machine-verified proof.",
+      "mandatory_directives": [
+        "Verify changes via automated test runners within an isolated sandbox prior to signaling success.",
+        "Run strict linters and static analyzers (e.g., Ruff, Mypy, ESLint) across modified paths.",
+        "Enforce self-review gates checking for diff pollution, lingering debugging code, and missing edge tests."
+      ]
+    },
+    {
+      "category_name": "Memory, Context & State Persistence",
+      "rationale": "Maintains cross-turn context coherence while preventing token bloat and context degradation.",
+      "mandatory_directives": [
+        "Evict ephemeral execution logs once a verification phase completes.",
+        "Store recurring architectural patterns, schemas, and lessons in persistent episodic memory.",
+        "Track active workspace state in an atomic scratchpad file (.agent/scratchpad.md)."
+      ]
+    }
+  ],
+  "specialized_tasks_requiring_dedicated_rules": [
+    {
+      "task_type": "Database Migrations & DDL Alterations",
+      "risk_profile": "Irreversible data corruption, schema lockups, production downtime.",
+      "dedicated_rule_file": ".agent/wiki/tasks/database_migrations.md",
+      "enforced_protocol": "Requires dry-run execution against local test instances, mandatory generation of down/revert migrations, and foreign key verification before applying DDL."
+    },
+    {
+      "task_type": "Third-Party Dependency Upgrades & Installs",
+      "risk_profile": "Supply-chain injection, transitive dependency conflicts, breaking API changes.",
+      "dedicated_rule_file": ".agent/wiki/tasks/dependency_management.md",
+      "enforced_protocol": "Must run vulnerability checks, audit package license compatibility, update lockfiles deterministically, and confirm zero build regressions."
+    },
+    {
+      "task_type": "Multi-File Structural Refactoring",
+      "risk_profile": "Cascading breaking changes, circular imports, hidden runtime reference errors.",
+      "dedicated_rule_file": ".agent/wiki/tasks/subsystem_refactor.md",
+      "enforced_protocol": "Mandates AST call-site identification, interface preservation or phased deprecation, and full test suite regression validation across all consumer packages."
+    },
+    {
+      "task_type": "External Scraping & Deep Web Research",
+      "risk_profile": "Rate-limit bans, malicious DOM payload ingestion, massive context explosion from raw HTML.",
+      "dedicated_rule_file": ".agent/wiki/tasks/web_scraping.md",
+      "enforced_protocol": "Requires headless markdown extraction, CSS selector scoping, raw HTML exclusion, and intermediate caching of synthesized summaries."
+    },
+    {
+      "task_type": "Bug Triage & Root Cause Analysis",
+      "risk_profile": "Patching symptoms instead of causes, premature refactoring, introducing regressions.",
+      "dedicated_rule_file": ".agent/wiki/tasks/incident_postmortem.md",
+      "enforced_protocol": "Agent is strictly forbidden from editing implementation files until a reproduction test script is authored and fails with the targeted symptom."
+    }
+  ],
+  "context_efficiency_and_lean_token_strategies": [
+    {
+      "strategy_name": "Just-In-Time (JIT) Lazy Loading",
+      "mechanism": "Root prompt contains only index pointers with trigger conditions. The agent uses file reading tools (`read_file`) to load Tier 2 or Tier 3 rules into context only when specific task boundaries are crossed.",
+      "token_savings_impact": "Reduces ambient system prompt overhead by 70% to 85% per turn."
+    },
+    {
+      "strategy_name": "Telegraphic High-Entropy Syntax",
+      "mechanism": "Author rules using imperative verb-first directives, omitting conversational pleasantries, redundant adjectives, and deep narrative prose.",
+      "token_savings_impact": "Cuts rule-file token footprint by 40% to 50% without degrading model instruction compliance."
+    },
+    {
+      "strategy_name": "AST & Line-Range Slicing",
+      "mechanism": "Instruct the agent to inspect targeted symbols and line ranges using AST exploration or grep/sed-style reads instead of dumping entire 1,000+ line source files into context.",
+      "token_savings_impact": "Conserves 80% to 90% of working context during multi-file inspection."
+    },
+    {
+      "strategy_name": "Tool Output Eviction & Scratchpad Summarization",
+      "mechanism": "After running large terminal test suites or linters, write a concise status summary to `.agent/scratchpad.md` and collapse or prune verbose raw tool outputs from active working memory.",
+      "token_savings_impact": "Eliminates attention dilution and prevents quadratic KV cache expansion in multi-turn conversations."
+    },
+    {
+      "strategy_name": "Glob-Scoped Activation Masks",
+      "mechanism": "Map Tier 2 and Tier 3 rules to file globs (e.g., using Cursor MDC rules or MCP matcher filters: `src/db/**/*.py` -> `database_migrations.md`).",
+      "token_savings_impact": "Guarantees domain rules only enter the context window when relevant files are being touched."
+    }
+  ],
+  "filesystem_manifest": {
+    "root": ".",
+    "files": [
+      {
+        "name": "AGENTS.md",
+        "type": "file",
+        "description": "Tier 1 Root Rule Engine (< 150 lines). Universal standard entrypoint."
+      },
+      {
+        "name": "CLAUDE.md",
+        "type": "symlink",
+        "target": "AGENTS.md",
+        "description": "Anthropic Claude Code compatibility link."
+      },
+      {
+        "name": ".clinerules",
+        "type": "symlink",
+        "target": "AGENTS.md",
+        "description": "Cline / Roo Code IDE compatibility link."
+      },
+      {
+        "name": ".agent/scratchpad.md",
+        "type": "file",
+        "description": "Volatile working memory for active task DAG, hypotheses, and AST traces."
+      },
+      {
+        "name": ".agent/wiki/01_planning_protocol.md",
+        "type": "file",
+        "description": "Tier 2: Cognitive planning, problem decomposition, and escalation."
+      },
+      {
+        "name": ".agent/wiki/02_research_protocol.md",
+        "type": "file",
+        "description": "Tier 2: Web scraping, AST analysis, and information foraging."
+      },
+      {
+        "name": ".agent/wiki/03_engineering_standards.md",
+        "type": "file",
+        "description": "Tier 2: OOP architecture, SOLID principles, and type safety."
+      },
+      {
+        "name": ".agent/wiki/04_verification_protocol.md",
+        "type": "file",
+        "description": "Tier 2: Unit testing, AST linting, and self-review rubric."
+      },
+      {
+        "name": ".agent/wiki/05_persistence_and_memory.md",
+        "type": "file",
+        "description": "Tier 2: Memory compaction, token budgeting, and vector indexing."
+      },
+      {
+        "name": ".agent/wiki/tasks/database_migrations.md",
+        "type": "file",
+        "description": "Tier 3: Specialized DDL and transactional database task rules."
+      },
+      {
+        "name": ".agent/wiki/tasks/dependency_management.md",
+        "type": "file",
+        "description": "Tier 3: Package upgrade, security audit, and lockfile rules."
+      },
+      {
+        "name": ".agent/wiki/tasks/subsystem_refactor.md",
+        "type": "file",
+        "description": "Tier 3: Architecture migration and breaking-change protocol."
+      },
+      {
+        "name": ".agent/wiki/tasks/security_and_sandbox.md",
+        "type": "file",
+        "description": "Tier 3: Container security boundaries, secret sanitization, and bash limits."
+      },
+      {
+        "name": ".agent/wiki/tasks/incident_postmortem.md",
+        "type": "file",
+        "description": "Tier 3: Bug reproduction harness and regression resolution checklist."
+      }
+    ]
+  }
+}

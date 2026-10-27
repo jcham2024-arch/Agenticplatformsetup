@@ -1,0 +1,192 @@
+{
+  "system_architecture": "Hierarchical Multi-Agent Platform (H-MAP)",
+  "design_philosophy": "Strict separation between cognitive executive governance (Brain Tier) and operational task execution (Worker Tier), backed by a closed-loop Self-Evolution Engine capable of dynamic tool synthesis, failure taxonomy logging, and autonomous rule refinement.",
+  "brain_tier_governance": {
+    "topology": "Triumvirate Executive Council (1 to 3 Cognitive Brains)",
+    "agents": [
+      {
+        "role_name": "Strategic Architect Brain",
+        "responsibility": "Deconstructs high-level user objectives into topologically sorted Directed Acyclic Graphs (DAGs) of discrete task contracts. Allocates execution budgets (tokens, time, tool access) and assigns sub-tasks to specialized worker agents.",
+        "interfaces": [
+          "deconstruct_goal(goal: str, context: SystemContext) -> TaskDAG",
+          "dispatch_task(task: TaskContract, worker: IExecutionAgent) -> TaskDispatchTicket",
+          "replan(failed_node: TaskNode, failure_context: Dict[str, Any]) -> TaskDAG"
+        ]
+      },
+      {
+        "role_name": "Critic & Verification Brain",
+        "responsibility": "Acts as an adversarial gatekeeper. Validates outputs produced by worker agents against acceptance criteria, AST static assertions, and safety protocols before task completion is acknowledged.",
+        "interfaces": [
+          "audit_task_execution(ticket: TaskDispatchTicket, output: ExecutionArtifact) -> AuditVerdict",
+          "verify_safety_invariants(action: AgentAction) -> SecurityClearance",
+          "calculate_confidence_score(evidence: List[EvidenceRecord]) -> float"
+        ]
+      },
+      {
+        "role_name": "Evolution & Meta-Learning Brain",
+        "responsibility": "Observes system execution traces, analyzes post-mortems, updates the episodic failure taxonomy, and triggers the automated creation or refinement of reusable skills and wiki rules.",
+        "interfaces": [
+          "analyze_session_telemetry(session_trace: ExecutionTrace) -> PostMortemReport",
+          "synthesize_new_skill(pattern: ReusablePattern) -> SkillDraft",
+          "patch_wiki_rules(friction_point: FrictionReport) -> WikiRulePatch"
+        ]
+      }
+    ]
+  },
+  "execution_tier_workers": [
+    {
+      "worker_type": "Code Engineering Agent",
+      "specialization": "Synthesizes typed OOP code, executes AST-level symbol refactoring, and authors targeted unit/property tests. Operates exclusively within a sandboxed environment.",
+      "toolset_access": [
+        "TreeSitterSymbolNavigator",
+        "SandboxExecutor",
+        "RuffLinter",
+        "PytestRunner"
+      ]
+    },
+    {
+      "worker_type": "Research & Web Intelligence Agent",
+      "specialization": "Performs async web crawling, metasearch querying, and API documentation synthesis without polluting the main reasoning context.",
+      "toolset_access": [
+        "Crawl4AIExtractor",
+        "SearXNGClient",
+        "MarkdownDocumentCompressor"
+      ]
+    },
+    {
+      "worker_type": "Data & Persistence Agent",
+      "specialization": "Executes dry-run database migrations, runs schema introspection, queries vector databases, and validates relational constraints.",
+      "toolset_access": [
+        "SchemaInspector",
+        "MigrationValidator",
+        "LanceDBClient",
+        "SQLSandboxClient"
+      ]
+    },
+    {
+      "worker_type": "Adversarial QA & Security Agent",
+      "specialization": "Runs fuzz testing, checks for secret exposure, validates network isolation, and attempts prompt-injection red-teaming on execution artifacts.",
+      "toolset_access": [
+        "SemgrepScanner",
+        "HypothesisFuzzRunner",
+        "LeakDetector"
+      ]
+    }
+  ],
+  "inter_agent_communication_protocol": {
+    "pattern": "Shared Blackboard with Typed Message Bus",
+    "contract_definition": {
+      "task_contract_schema": {
+        "task_id": "UUID string",
+        "issuer": "BrainAgent identifier",
+        "assigned_to": "ExecutionWorker identifier",
+        "goal_description": "Precise imperative instruction string",
+        "context_slice": "Token-optimized slice of state relevant only to this task",
+        "input_artifacts": ["Array of file paths or AST symbols"],
+        "expected_artifacts": ["Array of required deliverables, e.g., patch file, test output"],
+        "timeout_seconds": "Integer execution limit"
+      }
+    },
+    "state_isolation": "Execution agents do not share chat histories. They communicate exclusively through the Blackboard state object, reading only assigned task slices and publishing back structured execution artifacts."
+  },
+  "self_evaluation_and_improvement_loop": {
+    "subsystem_1_failure_logging_and_reflection": {
+      "mechanism": "When any execution agent fails a task or is rejected by the Critic Brain, an automated reflection cycle triggers. The Evolution Brain classifies the error (e.g., SyntaxError, ContextLoss, MissingDependency, InsecureExecution), generates a Root-Cause Analysis (RCA), and writes an entry into `.agent/memory/episodic_failures.parquet`.",
+      "prevention_gate": "Before the Strategic Architect dispatches any new task, it queries this store to inject specific negative constraints into the worker's prompt slice."
+    },
+    "subsystem_2_autonomous_skill_synthesis": {
+      "trigger_condition": "A worker agent successfully performs a multi-step sequence that is either computationally intensive or marked by the Evolution Brain as frequently recurrent (> 2 occurrences).",
+      "synthesis_pipeline": [
+        "1. Extraction: Evolution Brain isolates the successful tool-call and python-script sequence from the execution trace.",
+        "2. Refactoring: Logic is abstracted into a typed Python class inheriting from `ISkill` with an explicit Model Context Protocol (MCP) tool schema.",
+        "3. Sandbox Verification: The newly created skill is saved to `.agent/skills/staging/` and subjected to automated unit tests authored by the QA Agent inside the gVisor sandbox.",
+        "4. Promotion: Upon passing 100% of tests, the skill moves to `.agent/skills/promoted/` and is dynamically added to the MCP Tool Registry for future use."
+      ]
+    },
+    "subsystem_3_wiki_rule_adaptation": {
+      "trigger_condition": "Identical execution bottlenecks, linter violations, or design-pattern anti-patterns detected across 3 independent sessions.",
+      "adaptation_pipeline": [
+        "1. Draft Patch: Evolution Brain formulates a targeted markdown addition to the relevant Tier 2/3 wiki file (e.g., appending a specific anti-pattern note to `.agent/wiki/03_engineering_standards.md`).",
+        "2. Rule Budget Guard: Verifies that the targeted rule file remains within its token/line budget (max 200 lines per file).",
+        "3. Human Review / Auto-Commit: In fully autonomous mode, commits the patch to Git; in supervised mode, queues the patch in `.agent/wiki/proposals/` for human approval."
+      ]
+    }
+  },
+  "oop_class_hierarchy": [
+    {
+      "class_name": "BaseAgent",
+      "module": "src.core.base_agent",
+      "responsibilities": "Abstract class managing identity, token budget tracking, telemetry emission, and base state."
+    },
+    {
+      "class_name": "BrainAgent",
+      "module": "src.core.brain_agent",
+      "inherits": "BaseAgent",
+      "responsibilities": "Extends BaseAgent with goal decomposition, task graph orchestration, and delegation capabilities."
+    },
+    {
+      "class_name": "ExecutionWorker",
+      "module": "src.core.execution_worker",
+      "inherits": "BaseAgent",
+      "responsibilities": "Stateless worker implementation that consumes a TaskContract, executes tools in an isolated sandbox, and yields ExecutionArtifacts."
+    },
+    {
+      "class_name": "BlackboardManager",
+      "module": "src.orchestration.blackboard",
+      "responsibilities": "Thread-safe central state repository holding global context, active task DAGs, and output artifacts."
+    },
+    {
+      "class_name": "SkillSynthesizer",
+      "module": "src.evolution.skill_synthesizer",
+      "responsibilities": "Converts successful execution traces into verified, reusable OOP ISkill modules with MCP definitions."
+    },
+    {
+      "class_name": "FailureTaxonomyEngine",
+      "module": "src.evolution.failure_taxonomy",
+      "responsibilities": "Maintains vector-indexed persistent storage of past errors, root causes, and corrective guardrails."
+    }
+  ],
+  "filesystem_layout": {
+    "root": "agentic-platform/",
+    "structure": [
+      ".agent/rules/AGENTS.md",
+      ".agent/wiki/01_architecture.md",
+      ".agent/wiki/02_planning_protocol.md",
+      ".agent/wiki/03_engineering_standards.md",
+      ".agent/wiki/04_verification_protocol.md",
+      ".agent/wiki/05_persistence_and_memory.md",
+      ".agent/skills/builtin/",
+      ".agent/skills/promoted/",
+      ".agent/skills/staging/",
+      ".agent/memory/episodic_failures.parquet",
+      ".agent/memory/lance_lancedb/",
+      "src/core/base_agent.py",
+      "src/core/brain_agent.py",
+      "src/core/execution_worker.py",
+      "src/orchestration/blackboard.py",
+      "src/orchestration/task_dispatcher.py",
+      "src/evolution/skill_synthesizer.py",
+      "src/evolution/failure_taxonomy.py",
+      "src/sandbox/gvisor_runner.py",
+      "tests/harness/"
+    ]
+  },
+  "operational_lifecycle_walkthrough": [
+    {
+      "phase": "Step 1: Goal Ingestion & Strategic Decomposition",
+      "detail": "User submits a complex objective. Strategic Architect Brain consults `.agent/wiki/01_architecture.md`, queries FailureTaxonomyEngine to avoid known pitfalls, and generates a multi-stage TaskDAG on the Blackboard."
+    },
+    {
+      "phase": "Step 2: Task Dispatch & Sandboxed Execution",
+      "detail": "Architect Brain dispatches Node 1 of the DAG to the Code Engineering Worker via a typed TaskContract. Worker executes in gVisor sandbox without host network access, editing targeted AST symbols."
+    },
+    {
+      "phase": "Step 3: Adversarial Verification & Gatekeeping",
+      "detail": "Worker submits its artifact back to the Blackboard. Critic Brain independently invokes the QA Agent to execute fuzz tests and static analysis. If tests fail, task is returned to worker with specific failure diagnostics."
+    },
+    {
+      "phase": "Step 4: Meta-Learning & Self-Improvement",
+      "detail": "Upon successful task completion, Evolution Brain reviews the multi-step trace. It extracts a novel data-transformation routine, compiles it into a new `ISkill` class in `.agent/skills/staging/`, verifies it against unit tests, and moves it to `promoted/` for all future runs."
+    }
+  ]
+}

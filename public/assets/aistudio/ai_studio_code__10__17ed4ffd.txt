@@ -1,0 +1,234 @@
+{
+  "installer_application_name": "AgentForge CLI",
+  "installer_overview": "A production-grade, zero-configuration bootstrap CLI and automation engine that orchestrates host preflight verification, physical directory scaffolding, template generation of wiki-linked rule trees, cloning and compilation of open-source skill repositories, dependency provisioning via uv/docker, and end-to-end synthetic verification.",
+  "application_architecture": {
+    "runtime": "Python 3.12+ (distributed as a standalone executable via PyInstaller / uvx / pipx)",
+    "terminal_ui_framework": "Typer + Rich (interactive progress bars, status spinners, and styled audit trees)",
+    "oop_class_model": [
+      {
+        "class_name": "PreflightAuditor",
+        "responsibility": "Inspects host operating system, virtualization flags, CPU architecture, and validates existence of Docker, gVisor, Git, and uv.",
+        "methods": [
+          "check_system_architecture() -> SystemInfo",
+          "verify_docker_daemon() -> bool",
+          "verify_gvisor_runtime() -> bool",
+          "verify_tooling_binaries(binaries: List[str]) -> Dict[str, bool]"
+        ]
+      },
+      {
+        "class_name": "WorkspaceScaffolder",
+        "responsibility": "Creates directory hierarchies, sets POSIX file permissions, and generates filesystem symlinks for cross-tool compatibility.",
+        "methods": [
+          "create_directory_tree(manifest: Dict[str, Any]) -> None",
+          "create_compatibility_symlinks(links: List[SymlinkSpec]) -> None",
+          "enforce_isolated_workspace_permissions() -> None"
+        ]
+      },
+      {
+        "class_name": "RuleSynthesisEngine",
+        "responsibility": "Renders high-entropy, telegraphic Tier 1, 2, and 3 rule files, asserting strict 200-line caps and valid bidirectional wiki links.",
+        "methods": [
+          "render_root_agent_rule(target_path: Path) -> None",
+          "render_domain_wiki_protocols(wiki_dir: Path) -> None",
+          "render_task_sops(tasks_dir: Path) -> None",
+          "audit_token_and_line_limits() -> Dict[str, int]"
+        ]
+      },
+      {
+        "class_name": "SkillRepositoryManager",
+        "responsibility": "Performs authenticated/shallow Git clones of vetted upstream skill repositories, MCP servers, and dockerized services.",
+        "methods": [
+          "clone_repository(repo_url: str, destination: Path, tag_or_commit: str) -> None",
+          "mount_builtin_skills(skills_dir: Path) -> None",
+          "extract_mcp_configs() -> Dict[str, Any]"
+        ]
+      },
+      {
+        "class_name": "EnvironmentProvisioner",
+        "responsibility": "Executes package builds, compiles Tree-sitter grammars, installs headless browser binaries via Playwright, and boots Docker containers.",
+        "methods": [
+          "provision_uv_virtualenv(workspace_root: Path) -> None",
+          "install_playwright_browsers() -> None",
+          "bootstrap_docker_services(compose_file: Path) -> None"
+        ]
+      },
+      {
+        "class_name": "DiagnosticVerifier",
+        "responsibility": "Runs an automated synthetic test suite across all subsystems, verifying sandbox isolation, AST parsing, vector DB persistence, and MCP communication.",
+        "methods": [
+          "run_sandbox_isolation_test() -> DiagnosticResult",
+          "run_ast_parsing_test() -> DiagnosticResult",
+          "run_lancedb_vector_test() -> DiagnosticResult",
+          "run_searxng_ping_test() -> DiagnosticResult",
+          "run_mcp_handshake_test() -> DiagnosticResult",
+          "generate_health_report() -> HealthReport"
+        ]
+      },
+      {
+        "class_name": "RollbackCoordinator",
+        "responsibility": "Provides transactional rollback. If any installation phase fails, undoes filesystem mutations and tears down dangling containers.",
+        "methods": [
+          "record_mutation(action: MutationAction) -> None",
+          "rollback_all() -> None"
+        ]
+      }
+    ]
+  },
+  "execution_pipeline_phases": [
+    {
+      "phase_id": 1,
+      "phase_name": "Preflight Environmental Audit",
+      "operations": [
+        "Audit host OS (Linux x86_64/ARM64, macOS Darwin).",
+        "Confirm Docker daemon is running and pingable.",
+        "Detect presence of Google gVisor (`runsc`). If missing on Linux, provide automated install prompt.",
+        "Verify `git`, `uv`, and `node`/`npx` (required for selected MCP servers) are accessible on PATH."
+      ],
+      "failure_policy": "Halt immediately with remediation instructions if Docker or uv is absent."
+    },
+    {
+      "phase_id": 2,
+      "phase_name": "Filesystem Scaffolding & Partitioning",
+      "operations": [
+        "Create `.agent/rules/`, `.agent/wiki/tasks/`, `.agent/skills/{builtin,staging,promoted}/`, and `.agent/memory/`.",
+        "Create physical isolation partitions: `.agent/workspaces/thinking/`, `.agent/workspaces/research/`, `.agent/workspaces/code_staging/`, and `.agent/workspaces/review_gates/`.",
+        "Initialize OOP framework directory structure: `src/{core,orchestration,workers,evolution,sandbox}/`.",
+        "Generate POSIX symlinks: `CLAUDE.md` -> `AGENTS.md`, `.clinerules` -> `AGENTS.md`."
+      ],
+      "failure_policy": "Trigger RollbackCoordinator to purge generated directories on permission or I/O failure."
+    },
+    {
+      "phase_id": 3,
+      "phase_name": "Rule Template Generation & Wiki Synthesis",
+      "operations": [
+        "Write Tier 1 Kernel Rule file (`AGENTS.md`) adhering to <= 150 lines with wiki routing matrix.",
+        "Write Tier 2 Domain Protocol files (`01_architecture.md`, `02_planning_protocol.md`, `03_engineering_standards.md`, `04_verification_protocol.md`, `05_persistence_and_memory.md`).",
+        "Write Tier 3 Task SOPs (`database_migrations.md`, `dependency_management.md`, `subsystem_refactor.md`, `security_and_sandbox.md`, `incident_postmortem.md`).",
+        "Run an internal line-count and broken-link linter across all generated markdown files."
+      ],
+      "failure_policy": "Abort if any generated rule file exceeds the 200-line budget or contains unresolvable `[[wiki-links]]`."
+    },
+    {
+      "phase_id": 4,
+      "phase_name": "Skill & Repository Cloning",
+      "repositories_to_pull": [
+        {
+          "name": "Model Context Protocol Reference Servers",
+          "url": "https://github.com/modelcontextprotocol/servers.git",
+          "target_directory": ".agent/skills/upstream/mcp_servers",
+          "shallow_clone": true,
+          "components_extracted": ["src/filesystem", "src/postgres", "src/fetch"]
+        },
+        {
+          "name": "Anthropic Official Agent Skills",
+          "url": "https://github.com/anthropics/skills.git",
+          "target_directory": ".agent/skills/upstream/anthropic_skills",
+          "shallow_clone": true,
+          "components_extracted": ["skills/"]
+        },
+        {
+          "name": "SearXNG Docker Compose Config",
+          "url": "https://github.com/searxng/searxng-docker.git",
+          "target_directory": "infra/searxng",
+          "shallow_clone": true,
+          "components_extracted": ["searxng/", "docker-compose.yaml"]
+        }
+      ],
+      "failure_policy": "Retry up to 3 times with exponential backoff on network timeout."
+    },
+    {
+      "phase_id": 5,
+      "phase_name": "Dependency Provisioning & Runtime Compilation",
+      "operations": [
+        "Execute `uv init --app` and install dependencies: `crawl4ai`, `tree-sitter`, `lancedb`, `langgraph`, `pydantic`, `pyarrow`, `ruff`, `pytest`.",
+        "Run `uv run playwright install --with-deps chromium` for Crawl4AI headless extraction.",
+        "Compile Tree-sitter parsers for Python, TypeScript, and Go into `.agent/skills/builtin/tree_sitter_grammars`.",
+        "Execute `docker compose -f infra/searxng/docker-compose.yaml up -d` to spin up local SearXNG metasearch.",
+        "Generate `.agent/mcp_config.json` with active configurations for filesystem, search, and AST servers."
+      ],
+      "failure_policy": "Capture stderr, write build failure log to `.agent/workspaces/thinking/build_error.log`, and halt."
+    },
+    {
+      "phase_id": 6,
+      "phase_name": "Synthetic Self-Test Verification Matrix",
+      "test_suite": [
+        {
+          "test_name": "gVisor Isolation Boundary Check",
+          "procedure": "Spawn a container with `--runtime=runsc` attempting forbidden privilege escalations and raw network ping; verify gVisor terminates with SIGSYS or security block."
+        },
+        {
+          "test_name": "Tree-sitter Symbol Navigation Test",
+          "procedure": "Parse a synthetic 1,000-line Python class and assert that method extraction and AST slicing complete within < 20 milliseconds."
+        },
+        {
+          "test_name": "LanceDB In-Process Vector Engine Test",
+          "procedure": "Create a temporary LanceDB table, insert 10 test embeddings, perform cosine similarity retrieval, and verify sub-millisecond query time."
+        },
+        {
+          "test_name": "Crawl4AI / SearXNG Pipeline Ping",
+          "procedure": "Execute a test query against local SearXNG (`http://localhost:8080`), route the result to Crawl4AI, and verify output is clean, boilerplate-free Markdown."
+        },
+        {
+          "test_name": "MCP Server Handshake Verification",
+          "procedure": "Launch MCP filesystem and AST servers over stdio, ping the `list_tools` endpoint, and assert schema conformance."
+        }
+      ],
+      "failure_policy": "Flag precise failing subsystem in Rich terminal UI; display corrective diagnosis."
+    }
+  ],
+  "user_cli_interface_specification": {
+    "command_syntax": "agentforge init [OPTIONS] [TARGET_DIRECTORY]",
+    "options": [
+      {
+        "flag": "--interactive / --non-interactive",
+        "description": "Toggle between step-by-step TUI wizard and headless automated CI mode."
+      },
+      {
+        "flag": "--sandbox-runtime [gvisor|docker|none]",
+        "default": "gvisor",
+        "description": "Select container isolation kernel level."
+      },
+      {
+        "flag": "--with-searxng / --no-searxng",
+        "default": "true",
+        "description": "Toggle self-hosted SearXNG metasearch container deployment."
+      },
+      {
+        "flag": "--dry-run",
+        "description": "Simulate directory creation, rule templating, and dependency checks without writing to disk."
+      }
+    ],
+    "terminal_ux_flow": [
+      "1. Display ASCII Banner and Platform Version.",
+      "2. Render Preflight System Audit Table (green checks / red crosses).",
+      "3. Interactive Prompt: Workspace target path and sandbox preference.",
+      "4. Real-time Progress Bar: Directory Scaffolding & Symlinking.",
+      "5. Real-time Progress Bar: Generating Rules (< 200 lines check).",
+      "6. Real-time Progress Bar: Git Cloning MCP & Skill Upstreams.",
+      "7. Real-time Progress Bar: Provisioning uv virtualenv & Playwright headless dependencies.",
+      "8. Live Test Matrix: Running 5 synthetic health tests with pass/fail badges.",
+      "9. Final Summary Card: Emitting workspace paths, Claude Code / Cline configuration instructions, and Obsidian vault setup link."
+    ]
+  },
+  "operational_readiness_deliverables": {
+    "generated_config_files": [
+      {
+        "path": ".agent/mcp_config.json",
+        "description": "Ready-to-use Model Context Protocol server configuration for Cline, Cursor, or Claude Desktop."
+      },
+      {
+        "path": "pyproject.toml",
+        "description": "Locked Python dependency manifest with strict Ruff linting and Pytest configurations."
+      },
+      {
+        "path": "infra/searxng/docker-compose.yaml",
+        "description": "Hardened local metasearch service container configuration."
+      },
+      {
+        "path": ".agent/rules/AGENTS.md",
+        "description": "Master Tier 1 kernel rule file with symlinks `CLAUDE.md` and `.clinerules` pointing to it."
+      }
+    ],
+    "post_install_validation_command": "agentforge doctor"
+  }
+}

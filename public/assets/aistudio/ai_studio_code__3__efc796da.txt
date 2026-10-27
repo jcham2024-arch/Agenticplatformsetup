@@ -1,0 +1,157 @@
+{
+  "open_source_ecosystem_overview": "A curated portfolio of top-tier, battle-tested open-source projects mapped to every subsystem of the agentic architecture, spanning orchestration, Model Context Protocol (MCP) tool integration, cognitive planning, web research, code analysis, sandboxing, and hierarchical memory.",
+  "orchestration_and_core_agent_engines": [
+    {
+      "name": "OpenHands (formerly OpenDevin)",
+      "repository": "github.com/All-Hands-AI/OpenHands",
+      "license": "MIT",
+      "suitability": "Autonomous software engineering agent platform featuring event-stream architecture, multi-agent delegation, and containerized runtime environments[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF3tjVEwHjH9XBbCGtV0AKSd9yrztGho6jq-KSMglVhxvphXTxBPiQT1rGKRMq1SbdG05MkUQxTq_qU8Nt2OgRCmxvAg81N1I5_T4wHgGRUg5mxY5Bb2TtjYFyYMDCRIJEX)][[2](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQGIHp3QwIcxz0AGJ-VeJnCKeaXkhTiOkWWQyNBFGPu6e2W-FmMPtTTt3D4EMG7yye4mz20bWn78EtK5xe_RUuHx_SJvKA8XAZ7F5j9iHZl9YLcsvI6SlCVlre0IMf-4g4H5)]. Excellent base for end-to-end coding loops and PR lifecycle management[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQF3tjVEwHjH9XBbCGtV0AKSd9yrztGho6jq-KSMglVhxvphXTxBPiQT1rGKRMq1SbdG05MkUQxTq_qU8Nt2OgRCmxvAg81N1I5_T4wHgGRUg5mxY5Bb2TtjYFyYMDCRIJEX)]."
+    },
+    {
+      "name": "LangGraph",
+      "repository": "github.com/langchain-ai/langgraph",
+      "license": "MIT",
+      "suitability": "Cyclic graph orchestration framework providing stateful Directed Acyclic Graphs (DAGs), deterministic state transitions, durable execution, and human-in-the-loop (HITL) pause/resume checkpoints."
+    },
+    {
+      "name": "Smolagents",
+      "repository": "github.com/huggingface/smolagents",
+      "license": "Apache-2.0",
+      "suitability": "Lightweight, object-oriented code-action agent framework where actions are emitted as raw executable code snippets rather than JSON RPC, significantly improving complex logic and multi-tool piping."
+    }
+  ],
+  "protocols_and_tool_interoperability": [
+    {
+      "name": "Model Context Protocol (MCP) SDKs",
+      "repository": "github.com/modelcontextprotocol",
+      "license": "MIT",
+      "suitability": "Standardized open protocol designed by Anthropic for exposing agent tools, context resources, and prompt templates across heterogeneous models and environments."
+    },
+    {
+      "name": "Official MCP Reference Servers",
+      "repository": "github.com/modelcontextprotocol/servers",
+      "license": "MIT",
+      "suitability": "Pre-built, modular MCP implementations for local filesystem access, Git repo management, PostgreSQL database inspection, and HTTP fetching."
+    },
+    {
+      "name": "Agent Skills Open Specification (SKILL.md)",
+      "repository": "github.com/anthropics/skills",
+      "license": "Apache-2.0",
+      "suitability": "Open standard for bundling specialized agent skills into modular directories containing frontmatter metadata triggers, procedural rules, and executable CLI helpers."
+    }
+  ],
+  "logical_thinking_and_planning_engines": [
+    {
+      "name": "DSPy",
+      "repository": "github.com/stanfordnlp/dspy",
+      "license": "MIT",
+      "suitability": "Algorithmic framework that compiles and optimizes declarative LLM pipelines into structured reasoning modules (Chain of Thought, Tree of Thought, and multi-hop decomposition)."
+    },
+    {
+      "name": "Aider Architect Engine",
+      "repository": "github.com/Aider-AI/aider",
+      "license": "Apache-2.0",
+      "suitability": "Proven dual-model pattern separating high-level strategic reasoning and planning from precise syntactic code modification, preventing premature file mutation."
+    }
+  ],
+  "research_and_web_scraping_engines": [
+    {
+      "name": "Crawl4AI",
+      "repository": "github.com/unclecode/crawl4ai",
+      "license": "Apache-2.0",
+      "suitability": "High-performance, async LLM-friendly crawler that converts arbitrary web pages into clean, structured Markdown, stripping DOM boilerplate and executing dynamic JavaScript via Playwright[[3](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQFFtCwecvF9xQ_sivs9OFXkzmFV9EllH_52JzBOpFU87i4ZTaa1gaKvA1vt-bVWMoJIoymFXRovLJ_5M8tJdDPIfLe6xWw7CLQEG0QdtvZOssJmuAUsvxh3G8SBkZ-uOBH_)][[4](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQG2RwR8QaUaRGhGttxwlQrEXl_9Dxo8-pGo_vnYtIDJLYt3R64xidHcM8SMRdPiTH7M9ccOxDAO5a_MV-2rWi6Vmjr1H14SYUFx7aTJhtUI9vB7OB9Pit65P6TKHTfcT6C2)][[5](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQHKmiOtJNwqoIQbmA077oBVpzKu6PQsh4ColAy3bU-HHyXylNKi6hoLq9cP4tNKR5xbfI7aOV85Inxg1fuXU8rXT7cSeSX3besefoHhVBiJUxK8Ksn3ldxwWAPh)]."
+    },
+    {
+      "name": "Browser-Use",
+      "repository": "github.com/browser-use/browser-use",
+      "license": "MIT",
+      "suitability": "Agentic browser automation library that enables LLMs to interact with complex web applications via Playwright and Chrome DevTools Protocol (CDP)[[6](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQHr9lZHsNJe75lsPlxSOJtfBPAS-AxHVvPQ8PIv_MGMs-hNZQW95if3YanMjG67sQ1jmGjtcit44LCuVn_-eKqfyURT7CZwB5lbA1Q4VXPj0FA5p1VAFCfdYF4jy2450OQCWoLhYjIthYwgVg%3D%3D)][[7](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQFQpH_wUgysXkrcu0W11vaLzow_PtGM17uy4EY8FV8Bd4poqB35pEwRW8KuASndelYS3JbYKNT-02pGt8QdoZjDbiMO6WcyUQl3-XLzkzYus_uMCtxIthT6GDsifk2uxlQ-R3x2Prx13E7irbAOAA%3D%3D)][[8](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQHOO-0fBbxiUMk-2VKKBylusOs4nzRtRiBo4QjzZZ5voAXIQAjqu4chU8UEDitFBAAYYhz8PKi47cXt3dFOGEuus1gmv0MymPLoTnpg_Ao85tta8DrnsFg65L4Y4Ocyli5hMWHP6I9MmAMaya-Ek72dDadK8vQeAzZlhpOqJ_gVbRe_oPRf1sBEkWmB1sxraf-ZXz4AAAnekFsKI7g%3D)]."
+    },
+    {
+      "name": "SearXNG",
+      "repository": "github.com/searxng/searxng",
+      "license": "AGPL-3.0",
+      "suitability": "Self-hosted, privacy-respecting metasearch engine aggregating queries across Google, Bing, DuckDuckGo, and GitHub, returning structured JSON without commercial search API fees."
+    }
+  ],
+  "coding_code_review_and_ast_engines": [
+    {
+      "name": "Tree-sitter",
+      "repository": "github.com/tree-sitter/tree-sitter",
+      "license": "MIT",
+      "suitability": "Incremental concrete syntax tree (CST/AST) parsing library supporting 40+ languages. Enables agents to locate function signatures, call graphs, and class definitions without loading entire source files into context."
+    },
+    {
+      "name": "Semgrep",
+      "repository": "github.com/semgrep/semgrep",
+      "license": "LGPL-2.1",
+      "suitability": "Semantic static analysis engine for code review. Scans diffs for architectural anti-patterns, security vulnerabilities, and adherence to team-specific OOP constraints."
+    },
+    {
+      "name": "Ruff & Pyright / Biome",
+      "repository": "github.com/astral-sh/ruff",
+      "license": "MIT",
+      "suitability": "Blazing-fast AST linters and static type checkers that provide sub-second automated verification loops to validate agent code modifications."
+    }
+  ],
+  "databasing_memory_and_context_engines": [
+    {
+      "name": "Mem0",
+      "repository": "github.com/mem0ai/mem0",
+      "license": "Apache-2.0",
+      "suitability": "Scalable memory infrastructure for AI agents that extracts atomic facts and user preferences, consolidating them into graph and vector indices with an official MCP integration[[9](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQHdhqlKKzA7bnurLpG9irWivAy4b15NCKXPsI4QktDinl8KfE3_5MMa-aZOc-lTB5ITvdbWKw8AZG54leSq2Gg4Qh340srWVQPCGzSwwzBjPAMD32avkiIgF8D5xO4u7wzR)][[10](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQHdH0kg4TzPF5PEDl-rAkd4HnCAMJGtDP6kjDPaWu1iC90fy_NczpbD_ythFVwrEMARcbeLlYBjosQoFZnCgJcREVAWrX7t5BE2Kga_7SdGWSu4gDo%3D)][[11](https://www.google.com/url?sa=E&q=https%3A%2F%2Fvertexaisearch.cloud.google.com%2Fgrounding-api-redirect%2FAUZIYQGr89_YuN5wzHtz3qa5mCG4tPz014--tnd7FXujHbGLVhLfsZmx9uQfnTHo9h_LzhWqWYgXw-ZyEmPqXxS9NUYKc5zBcQeDISX0z_clKF-iIywpo_ptEP5i)]."
+    },
+    {
+      "name": "LanceDB",
+      "repository": "github.com/lancedb/lancedb",
+      "license": "Apache-2.0",
+      "suitability": "Serverless, embedded columnar vector database built on the Lance data format. Operates in-process without daemon overhead, providing zero-latency disk-backed episodic vector retrieval."
+    },
+    {
+      "name": "Qdrant",
+      "repository": "github.com/qdrant/qdrant",
+      "license": "Apache-2.0",
+      "suitability": "Production-grade, distributed vector similarity search engine supporting complex JSON metadata payload filtering, perfect for multi-session agent episodic memory."
+    },
+    {
+      "name": "Graphiti",
+      "repository": "github.com/getzep/graphiti",
+      "license": "Apache-2.0",
+      "suitability": "Temporal knowledge graph engine designed specifically for AI agents, capturing how entities, codebases, and architectural decisions evolve over time."
+    }
+  ],
+  "sandboxing_and_secure_execution_environments": [
+    {
+      "name": "E2B Code Interpreter Engine",
+      "repository": "github.com/e2b-dev/infra",
+      "license": "Apache-2.0",
+      "suitability": "Open-source infrastructure running micro-virtual machines (MicroVMs via Firecracker) designed for executing untrusted AI-generated code, bash scripts, and test suites in strict isolation."
+    },
+    {
+      "name": "gVisor",
+      "repository": "github.com/google/gvisor",
+      "license": "Apache-2.0",
+      "suitability": "Application kernel written in Go that implements a substantial portion of the Linux system call interface, isolating Docker container processes from the host kernel."
+    }
+  ],
+  "context_compaction_and_repository_packers": [
+    {
+      "name": "Repomix (formerly Repopack)",
+      "repository": "github.com/yamadashy/repomix",
+      "license": "MIT",
+      "suitability": "CLI tool that packs repository codebases into structured, token-optimized XML/Markdown formats with built-in Tree-sitter symbol compression and ignore pattern filtering."
+    },
+    {
+      "name": "Tiktoken",
+      "repository": "github.com/openai/tiktoken",
+      "license": "MIT",
+      "suitability": "Fast BPE token calculation library for calculating real-time token budgets before injecting wiki documentation into the system prompt."
+    }
+  ],
+  "integrated_architecture_blueprint": {
+    "core_loop": "Smolagents or LangGraph orchestrates the state machine across OOP interfaces.",
+    "rule_enforcement": "AGENTS.md (< 150 lines) acts as the root index; agents use the MCP Filesystem tool to JIT-load Tier 2 (.agent/wiki/*.md) and Tier 3 (.agent/wiki/tasks/*.md) files.",
+    "execution_boundary": "All shell executions, database queries, and test runs are dispatched to an E2B / Docker gVisor sandbox.",
+    "memory_tier": "Mem0 + LanceDB captures episodic session summaries, while Repomix + Tree-sitter compresses code references for ultra-lean context."
+  }
+}
