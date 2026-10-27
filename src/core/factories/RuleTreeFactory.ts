@@ -46,6 +46,9 @@ export class RuleTreeFactory implements IRuleTreeFactory {
     const lRef = this.formatLink('Large-scale Refactoring', '.agent/wiki/tasks/subsystem_refactor.md', knowledgeFormat);
     const lSec = this.formatLink('Sandboxing & Command Execution', '.agent/wiki/tasks/security_and_sandbox.md', knowledgeFormat);
     const lPost = this.formatLink('Error Recovery & Bug Triage', '.agent/wiki/tasks/incident_postmortem.md', knowledgeFormat);
+    const lCrawl = this.formatLink('Headless Crawling & DOM Pruning', '.agent/wiki/tasks/browser_crawling_sop.md', knowledgeFormat);
+    const lAst = this.formatLink('Tree-sitter AST & Byte Patching', '.agent/wiki/tasks/ast_slicing_sop.md', knowledgeFormat);
+    const lMcp = this.formatLink('MCP Tool Calling & Realpath Jail', '.agent/wiki/tasks/mcp_integration_sop.md', knowledgeFormat);
 
     const content = `# AGENT OPERATING CHARTER (KERNEL RULES)
 <!-- Target: AGENTS.md | Line Budget: <= 150 lines | Status: Immutable Base Standard -->
@@ -69,6 +72,9 @@ For high-risk operations, strictly follow the relevant SOP before calling mutati
 - Large-scale Refactoring              -> ${lRef}
 - Sandboxing & Command Execution       -> ${lSec}
 - Error Recovery & Bug Triage          -> ${lPost}
+- Headless Crawling & DOM Pruning      -> ${lCrawl}
+- Tree-sitter AST & Byte Patching      -> ${lAst}
+- MCP Tool Calling & Realpath Jail     -> ${lMcp}
 
 ## 4. WORKSPACE PARTITIONING & ISOLATION INVARIANTS
 All multi-turn work must respect the physical directory boundaries:
@@ -270,12 +276,50 @@ Never modify production source files to fix a bug until a reproduction test scri
 ## 2. POST-MORTEM RECORDING
 Log root-cause analysis (RCA) and mitigation guardrails to \`.agent/memory/episodic_failures.parquet\`.`;
 
+    const s6 = `# TASK SOP: HEADLESS BROWSER CRAWLING & DOM PRUNING
+<!-- Line Budget: <= 200 lines | Category: Tier 3 Specialized Directive -->
+
+## 1. RUNTIME CONFIGURATION
+- Use Crawl4AI / Playwright inside isolated container with \`--shm-size=256m\`.
+- Pass mandatory flags: \`--no-sandbox\`, \`--disable-dev-shm-usage\`, and \`--disable-gpu\`.
+
+## 2. DOM PRUNING PIPELINE
+- Strip all \`<script>\`, \`<style>\`, \`<svg>\`, and \`data:image/...\` base64 strings before tokenization.
+- Convert sanitized semantic tags into clean Markdown headings and tables.
+- Achieve minimum 85% token reduction compared to raw HTML before passing to reasoning models.`;
+
+    const s7 = `# TASK SOP: TREE-SITTER AST PARSING & CODE MUTATION
+<!-- Line Budget: <= 200 lines | Category: Tier 3 Specialized Directive -->
+
+## 1. SYMBOL QUERYING OVER FILE DUMPS
+- Never dump entire source files exceeding 100 lines into context.
+- Query targeted function, class, or method symbol ranges via Tree-sitter CST queries.
+
+## 2. BOTTOM-UP DESCENDING BYTE PATCHING (CRITICAL)
+- When applying multi-hunk edits to a single file, sort all patches in descending order of \`startByte\` ($s_n \\ge s_{n-1} \\ge \\dots \\ge s_0$).
+- Splicing from bottom to top guarantees that subsequent byte offsets are not shifted or corrupted by earlier insertions or deletions.`;
+
+    const s8 = `# TASK SOP: MODEL CONTEXT PROTOCOL (MCP) INTERACTION
+<!-- Line Budget: <= 200 lines | Category: Tier 3 Specialized Directive -->
+
+## 1. AIR-GAPPED REALPATH CONTAINMENT
+- All filesystem tool paths must be resolved through \`McpPathPolicyFilter\`.
+- Real candidate paths must be verified with \`toRealPath()\` to strictly reside within the canonical workspace root.
+- Immediate \`SecurityException\` is thrown on any \`..\` or symlink escape attempt.
+
+## 2. LEAN STDIO JSON-RPC EXECUTION
+- Maintain persistent stdio process pipes for MCP servers.
+- Validate incoming responses against JSON Schema definitions prior to memory ingestion.`;
+
     const sops = [
       { path: '.agent/wiki/tasks/database_migrations.md', content: s1, title: 'Database Migrations' },
       { path: '.agent/wiki/tasks/dependency_management.md', content: s2, title: 'Dependency Management' },
       { path: '.agent/wiki/tasks/subsystem_refactor.md', content: s3, title: 'Subsystem Refactoring' },
       { path: '.agent/wiki/tasks/security_and_sandbox.md', content: s4, title: 'Security and Sandbox' },
-      { path: '.agent/wiki/tasks/incident_postmortem.md', content: s5, title: 'Incident Post-Mortem' }
+      { path: '.agent/wiki/tasks/incident_postmortem.md', content: s5, title: 'Incident Post-Mortem' },
+      { path: '.agent/wiki/tasks/browser_crawling_sop.md', content: s6, title: 'Browser Crawling & Pruning' },
+      { path: '.agent/wiki/tasks/ast_slicing_sop.md', content: s7, title: 'AST Parsing & Byte Patching' },
+      { path: '.agent/wiki/tasks/mcp_integration_sop.md', content: s8, title: 'MCP Tool Integration & Jail' }
     ];
 
     return sops.map(s => ({

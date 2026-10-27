@@ -1314,7 +1314,10 @@ Click a quick diagnostic chip below or describe any error you are encountering!`
                       { path: 'tasks/dependency_management.md', title: 'Vulnerability Audits & Lockfiles', lines: 30 },
                       { path: 'tasks/subsystem_refactor.md', title: 'Call-Site Tracing & Deprecation', lines: 28 },
                       { path: 'tasks/security_and_sandbox.md', title: 'gVisor Kernel & Isolation Caps', lines: 34 },
-                      { path: 'tasks/incident_postmortem.md', title: 'Reproduction Harness & Taxonomy', lines: 26 }
+                      { path: 'tasks/incident_postmortem.md', title: 'Reproduction Harness & Taxonomy', lines: 26 },
+                      { path: 'tasks/browser_crawling_sop.md', title: 'Crawl4AI DOM Pruning & /dev/shm', lines: 25 },
+                      { path: 'tasks/ast_slicing_sop.md', title: 'Tree-sitter AST & Descending Hunks', lines: 29 },
+                      { path: 'tasks/mcp_integration_sop.md', title: 'MCP Tool Calling & Realpath Jail', lines: 27 }
                     ].map(s => (
                       <div
                         key={s.path}
